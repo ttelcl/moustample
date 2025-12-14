@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Libraries/">
+    <Project Path="TteLcl.Moustample/TteLcl.Moustample.csproj" Id="41319b4d-2f97-478c-9a69-38f53694e836" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="LICENSE" />
