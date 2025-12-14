@@ -44,14 +44,15 @@ public class InstructionPart: TrimPart
   /// <summary>
   /// Create a new <see cref="InstructionPart"/> from a content slice, parsing
   /// and removing any trim markers and trimming the remaining internal content.
+  /// If the part is empty, a <see cref="TrimPart"/> is returned instead.
   /// </summary>
   /// <param name="content"></param>
   /// <returns></returns>
-  public static InstructionPart FromContent(ReadOnlyMemory<char> content)
+  public static TrimPart FromContent(ReadOnlyMemory<char> content)
   {
     if(content.IsEmpty)
     {
-      return new InstructionPart(PlainPartTrimming.NoTrimming, content);
+      return new TrimPart(PlainPartTrimming.NoTrimming);
     }
     else
     {
@@ -59,7 +60,7 @@ public class InstructionPart: TrimPart
       if(content.Length == 1 && span[0] == '-')
       {
         // special case: trim on both sides (even though there is only one '-')
-        return new InstructionPart(PlainPartTrimming.TrimBoth, ReadOnlyMemory<char>.Empty);
+        return new TrimPart(PlainPartTrimming.TrimBoth);
       }
       else
       {
@@ -74,7 +75,11 @@ public class InstructionPart: TrimPart
           trimming |= PlainPartTrimming.TrimFollowing;
           content = content[..^1];
         }
-        return new InstructionPart(trimming, content);
+        content = content.Trim();
+        return
+          content.IsEmpty
+          ? new TrimPart(trimming)
+          : new InstructionPart(trimming, content);
       }
     }
   }
