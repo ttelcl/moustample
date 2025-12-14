@@ -21,7 +21,7 @@ namespace TteLcl.Moustample.EvaluationModel;
 /// combinations may make no sense). The ways of access are: scalar,
 /// indexed, mapped.
 /// </summary>
-public abstract class DataValue
+public abstract class DataValue: IDataView
 {
   /// <summary>
   /// Create a new DataValue

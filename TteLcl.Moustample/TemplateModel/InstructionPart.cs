@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using TteLcl.Moustample.EvaluationModel;
+
 namespace TteLcl.Moustample.TemplateModel;
 
 /// <summary>
@@ -18,6 +20,8 @@ namespace TteLcl.Moustample.TemplateModel;
 /// </summary>
 public class InstructionPart: TrimPart
 {
+  private IRenderable? _preparedInstruction = null;
+
   /// <summary>
   /// Create a new InstructionPart
   /// </summary>
@@ -105,8 +109,11 @@ public class InstructionPart: TrimPart
     }
     else
     {
-      throw new NotImplementedException(
-        "NYI: template evaluation. For now: use '-preparse'");
+      if(_preparedInstruction == null)
+      {
+        _preparedInstruction = PreparedInstruction.Parse(Content);
+      }
+      _preparedInstruction.Render(context, writer);
     }
   }
 
