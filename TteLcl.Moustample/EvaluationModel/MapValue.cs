@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,26 +59,38 @@ public class MapValue: DataValue
   /// <summary>
   /// Retrieves the value for the empty string: <c>this[""].AsScalar</c>
   /// </summary>
-  public override string AsScalar { get => this[String.Empty].AsScalar; }
+  public override string AsScalar {
+    get {
+      if(TryGetValue(String.Empty, out var value))
+      {
+        return value.AsScalar;
+      }
+      return String.Empty;
+    }
+  }
 
   /// <summary>
   /// Implemented as <c>this[index.ToString()]</c> (which probably
   /// returns <see cref="ScalarValue.Empty"/>)
   /// </summary>
-  /// <param name="index"></param>
-  /// <returns></returns>
-  public override DataValue this[int index] { get => this[index.ToString()]; }
+  public override bool TryGetValue(int index, out DataValue value)
+  {
+    return TryGetValue(index.ToString(), out value);
+  }
 
   /// <summary>
   /// Returns the value in this map if available. Returns <see cref="ScalarValue.Empty"/>
   /// otherwise
   /// </summary>
-  /// <param name="key"></param>
-  /// <returns></returns>
-  public override DataValue this[string key] {
-    get {
-      return _map.TryGetValue(key, out var value) ? value : ScalarValue.Empty;
+  public override bool TryGetValue(string key, out DataValue value)
+  {
+    if(_map.TryGetValue(key, out var value0))
+    {
+      value = value0;
+      return true;
     }
+    value = ScalarValue.Empty;
+    return false;
   }
 
   /// <summary>

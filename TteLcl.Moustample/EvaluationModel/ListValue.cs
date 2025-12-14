@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,23 +37,28 @@ public class ListValue: DataValue
   /// Returns the datavalue at the given index, or <see cref="ScalarValue.Empty"/>
   /// if the index is out of range
   /// </summary>
-  /// <param name="index"></param>
-  /// <returns></returns>
-  public override DataValue this[int index] {
-    get {
-      return index >= 0 && index < _values.Count ? _values[index] : ScalarValue.Empty;
+  public override bool TryGetValue(int index, out DataValue value)
+  {
+    if(index >= 0 && index < _values.Count)
+    {
+      value = _values[index];
+      return true;
     }
+    value = ScalarValue.Empty;
+    return false;
   }
 
   /// <summary>
   /// Tries to convert the key to an integer and tries to use that with the
   /// integer indexer. Returns <see cref="ScalarValue.Empty"/> if not found
   /// </summary>
-  /// <param name="key"></param>
-  /// <returns></returns>
-  public override DataValue this[string key] {
-    get {
-      return Int32.TryParse(key, out var index) ? this[index] : ScalarValue.Empty;
+  public override bool TryGetValue(string key, out DataValue value)
+  {
+    if(Int32.TryParse(key, out var index))
+    {
+      return TryGetValue(index, out value);
     }
+    value = ScalarValue.Empty;
+    return false;
   }
 }

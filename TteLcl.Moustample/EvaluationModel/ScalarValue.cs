@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -74,11 +75,19 @@ public class ScalarValue: DataValue
   /// <summary>
   /// Always returns <see cref="Empty"/>
   /// </summary>
-  public override DataValue this[int index] { get => Empty; }
+  public override bool TryGetValue(int index, out DataValue value)
+  {
+    value = Empty;
+    return false;
+  }
 
   /// <summary>
   /// Always returns <see cref="Empty"/>
   /// </summary>
-  public override DataValue this[string key] { get => Empty; }
+  public override bool TryGetValue(string key, out DataValue value)
+  {
+    value = Empty;
+    return false;
+  }
 
 }

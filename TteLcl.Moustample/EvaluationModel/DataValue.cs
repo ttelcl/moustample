@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -126,13 +127,14 @@ public abstract class DataValue
   /// Return an integer-indexed DataValue
   /// If not applicable: return <see cref="ScalarValue.Empty"/>
   /// </summary>
-  public abstract DataValue this[int index] { get; }
+  public abstract bool TryGetValue(int index, out DataValue value);
 
   /// <summary>
   /// Return an string-indexed scalar string
   /// If not applicable: return <see cref="ScalarValue.Empty"/>
   /// </summary>
-  public abstract DataValue this[string key] { get; }
+  public abstract bool TryGetValue(string key, out DataValue value);
+
 
 
 }
