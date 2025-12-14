@@ -32,7 +32,8 @@ public class Template: IRenderable
 
   /// <summary>
   /// Create a new <see cref="Template"/> containing the given
-  /// <paramref name="parts"/>.
+  /// <paramref name="parts"/>. Note that trimming operations
+  /// are not perfomed, it is assumed they already were.
   /// </summary>
   /// <param name="parts"></param>
   public Template(IEnumerable<TemplatePart> parts)
@@ -47,10 +48,26 @@ public class Template: IRenderable
   public IReadOnlyList<TemplatePart> Parts => _parts;
 
   /// <summary>
-  /// Append another part
+  /// Append another part, and apply any pending trimming operations.
   /// </summary>
-  internal void AddPart(TemplatePart part)
+  internal void AddPartAndTrim(TemplatePart part)
   {
+    var precedingPart = _parts.LastOrDefault();
+    if(part is TrimPart trimmer)
+    {
+      if(trimmer.TrimPreceding && precedingPart is PlainPart pp)
+      {
+        // replace existing plain part
+        _parts[_parts.Count - 1] = pp.TrimTail();
+      }
+    }
+    else if(part is PlainPart plainPart)
+    {
+      if(precedingPart is TrimPart tp && tp.TrimFollowing)
+      {
+        part = plainPart.TrimHead();
+      }
+    }
     _parts.Add(part);
   }
 

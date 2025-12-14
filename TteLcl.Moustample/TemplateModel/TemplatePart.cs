@@ -29,6 +29,14 @@ public abstract class TemplatePart: IRenderable
   /// </summary>
   public static TemplatePart PlainTextPart(string text)
   {
+    return new PlainPart(text.AsMemory());
+  }
+
+  /// <summary>
+  /// Create a new plain text part
+  /// </summary>
+  public static TemplatePart PlainTextPart(ReadOnlyMemory<char> text)
+  {
     return new PlainPart(text);
   }
 
