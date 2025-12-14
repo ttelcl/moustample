@@ -43,6 +43,27 @@ public class Template: IRenderable
   }
 
   /// <summary>
+  /// Create a new <see cref="Template"/> by parsing the preloaded buffer
+  /// </summary>
+  /// <param name="buffer"></param>
+  /// <returns></returns>
+  public static Template Parse(TemplateParseBuffer buffer)
+  {
+    return buffer.Build();
+  }
+
+  /// <summary>
+  /// Parse the template text into a new <see cref="Template"/> instance
+  /// </summary>
+  /// <param name="templateText"></param>
+  /// <returns></returns>
+  public static Template Parse(string templateText)
+  {
+    var buffer = new TemplateParseBuffer(templateText);
+    return buffer.Build();
+  }
+
+  /// <summary>
   /// A read-only view on the sequence of parts in this template
   /// </summary>
   public IReadOnlyList<TemplatePart> Parts => _parts;

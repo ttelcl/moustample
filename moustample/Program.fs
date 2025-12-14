@@ -4,7 +4,7 @@ open System
 
 open CommonTools
 open ExceptionTool
-open Usage
+open ColorPrint
 
 let rec run arglist =
   // For subcommand based apps, split based on subcommand here
@@ -15,14 +15,12 @@ let rec run arglist =
   | "--help" :: _
   | "-h" :: _
   | [] ->
-    usage verbose
+    Usage.usage ""
     0  // program return status code to the operating system; 0 == "OK"
-  //  *EXAMPLE*:
-  //| "foo" :: rest ->
-  //  rest |> AppFoo.runFoo
-  | _ :: _ ->
-    // TODO: actual processing based on command line arguments
-    new NotImplementedException("moustample.exe is not yet implemented") |> raise
+  | x :: rest when x.StartsWith('-') ->
+    arglist |> App.run
+  | x :: _ ->
+    cp $"\frUnknown command \fy{x}\f0."
     1
 
 [<EntryPoint>]

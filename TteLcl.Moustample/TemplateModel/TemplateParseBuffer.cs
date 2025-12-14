@@ -40,7 +40,12 @@ public class TemplateParseBuffer
   /// <returns></returns>
   public Template Build()
   {
-    return new Template(BuildParts());
+    var template = new Template();
+    foreach(var part in BuildParts())
+    {
+      template.AddPartAndTrim(part);
+    }
+    return template;
   }
 
   /// <summary>
@@ -78,6 +83,7 @@ public class TemplateParseBuffer
   /// <returns></returns>
   public bool TryGetNextPart([NotNullWhen(true)] out TemplatePart? part)
   {
+    var parsePointer0 = ParsePointer;
     var partSpan = TemplateText.Span[ParsePointer..];
     if(partSpan.IsEmpty)
     {
@@ -88,11 +94,19 @@ public class TemplateParseBuffer
     if(moustacheCount >= 2)
     {
       part = ParseInstructionPart(partSpan);
+      if(parsePointer0 >= ParsePointer)
+      {
+        throw new InvalidOperationException("Internal error: parse pointer did not move");
+      }
       return true;
     }
     else
     {
       part = ParsePlainPart(partSpan);
+      if(parsePointer0 >= ParsePointer)
+      {
+        throw new InvalidOperationException("Internal error: parse pointer did not move");
+      }
       return true;
     }
   }
@@ -117,6 +131,7 @@ public class TemplateParseBuffer
       }
       else if(moustacheCount == 1)
       {
+        index += moustacheCount;
         continue;
       }
       else if(moustacheCount == 0)
@@ -144,7 +159,7 @@ public class TemplateParseBuffer
     var index = outerMoustacheCount;
     while(true)
     {
-      while(index < span.Length && span[index] != '{')
+      while(index < span.Length && span[index] != '}')
       {
         index++;
       }
@@ -163,7 +178,7 @@ public class TemplateParseBuffer
       }
       else
       {
-        var innerTailIndex = index;
+        var innerTailIndex = ParsePointer + index;
         var outerTailIndex = innerTailIndex + outerMoustacheCount;
         var outerHeadIndex = ParsePointer;
         var innerHeadIndex = outerHeadIndex + outerMoustacheCount;
@@ -185,7 +200,7 @@ public class TemplateParseBuffer
   private static int CountRepeatedCharacter(ReadOnlySpan<char> buffer, char character)
   {
     var count = 0;
-    while(buffer.Length >= count && buffer[count] == character)
+    while(count < buffer.Length && buffer[count] == character)
     {
       count++;
     }
