@@ -93,14 +93,21 @@ public class InstructionPart: TrimPart
   /// <inheritdoc/>
   protected override void Render(TemplateRenderContext context, TextWriter writer)
   {
-    // TEMPORARY
-    writer.Write("{");
-    writer.Write(TrimPreceding ? '-' : '+');
-    writer.Write("<DEBUG>{");
-    writer.Write(Content);
-    writer.Write("}</DEBUG>");
-    writer.Write(TrimFollowing ? '-' : '+');
-    writer.Write("}");
+    if(context.PreparseOnly)
+    {
+      writer.Write("{");
+      writer.Write(TrimPreceding ? '-' : '+');
+      writer.Write("<DBG>{");
+      writer.Write(Content);
+      writer.Write("}</DBG>");
+      writer.Write(TrimFollowing ? '-' : '+');
+      writer.Write("}");
+    }
+    else
+    {
+      throw new NotImplementedException(
+        "NYI: template evaluation. For now: use '-preparse'");
+    }
   }
 
 }

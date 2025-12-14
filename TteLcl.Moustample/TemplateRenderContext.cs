@@ -26,4 +26,10 @@ public class TemplateRenderContext
   {
   }
 
+  /// <summary>
+  /// Debug aid: when true, do not interpret instructions, only break the
+  /// template into parts
+  /// </summary>
+  public bool PreparseOnly { get; set; }
+
 }

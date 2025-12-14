@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,5 +47,13 @@ public class TrimPart: TemplatePart
   protected override void Render(TemplateRenderContext context, TextWriter writer)
   {
     // do not render anything (but subclasses may)
+    if(context.PreparseOnly)
+    {
+      writer.Write("{");
+      writer.Write(TrimPreceding ? '-' : '+');
+      writer.Write("<DBG/>");
+      writer.Write(TrimFollowing ? '-' : '+');
+      writer.Write("}");
+    }
   }
 }

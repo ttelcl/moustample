@@ -9,7 +9,8 @@ let usage focus =
   cp ""
   cp "\fomoustample \fg-t \fctemplate.txt \fg-d \fcdata.json \f0[\fg-o \fcoutputfile\f0]"
   cp "   Apply the \fomoustample\f0 template \fctemplate.txt\f0 to the data \fcdata.json\f0."
-  cp "\fg-v               \f0Verbose mode"
+  cp "\fg-preparse          \f0Debug mode: only pre-parse the template, emit placeholders for instructions"
+  cp "\fg-v                 \f0Verbose mode"
 
 
 

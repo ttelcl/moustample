@@ -17,6 +17,7 @@ type private Options = {
   TemplateFile: string
   DataFile: string
   OutputFile: string
+  Preparse: bool
 }
 
 let private runApp o =
@@ -25,6 +26,8 @@ let private runApp o =
     let templateText = File.ReadAllText(o.TemplateFile)
     templateText |> Template.Parse
   let context = new TemplateRenderContext()
+  if o.Preparse then
+    context.PreparseOnly <- true
   if o.OutputFile |> String.IsNullOrEmpty then
     ecp "----- \fyRendering to console\f0 -----"
     template.Render(context, Console.Out)
@@ -51,6 +54,9 @@ let run args =
       rest |> parseMore {o with DataFile = file}
     | "-o" :: file :: rest ->
       rest |> parseMore {o with OutputFile = file}
+    | "-preparse" :: rest
+    | "-dbg" :: rest ->
+      rest |> parseMore {o with Preparse = true}
     | [] ->
       if o.TemplateFile |> String.IsNullOrEmpty then
         cp "\foNo template file (\fg-t\fo) given\f0."
@@ -64,6 +70,7 @@ let run args =
     TemplateFile = null
     DataFile = null
     OutputFile = null
+    Preparse = false
   }
   match oo with
   | Some(o) ->
